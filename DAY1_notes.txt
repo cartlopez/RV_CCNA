@@ -1,0 +1,66 @@
+CISCO DAY 1 CONFIGURATION | May 20, 2024
+
+TASK1: What kind of Network Person are You?
+Modern Network Engineer = 25% DevOps + 50% Network + 25% Systems
+
+TASK2: Configuring your 1st Cisco Device
+On SecruteCRT --> Choose "Quick Connect" or kidlat symbol 
+			Protocol: Serial
+			Baud Rate: 9600
+			Flow Control: No tick on 3 boxes
+		  Then click "Connect"
+
+On command line: //configure your Router
+	Router> enable (Type "ena" then press "Tab" button)
+	Router# show run   ; to show running config (Press "Enter" to show another line. Press "space bar" to show MORE lines.)
+	Router# conf t     ; shortcut for "configure terminal" command
+	Router(config)# hostname CUCM-31
+	CUCM-31(config)# enable secret pass
+	CUCM-31(config)# no logging console
+	CUCM-31(config)# interface fa0/0    	; to enter INTERFACE
+	CUCM-31(config-if)# no shutdown   	; or type "no shut" to buhay ng interface port
+	CUCM-31(config-if)# shutdown   		; or type "shut" to patay ng interface port
+	CUCM-31(config-if)# exit   		; to exit interface mode
+	CUCM-31(config)# voice-port 0/0/0   	; to enter VOICE-PORT
+	CUCM-31(config-voiceport)# no shutdown
+	CUCM-31(config-voiceport)# ^C		; or type "end" to exit
+	CUCM-31# 
+
+On command line: //configure your Switch
+	Switch> enable
+	Switch# "right-click on mouse"		; to paste copied codes 
+
+TASK 3: Refer to "DAY1May20'24-CATH _codes.txt" or the Cheat notes for Day1)
+
+TASK 4: Ping tests and loose cable troubleshooting
+
+TASK 5: Basic Python for futureNetworkEngineers:
+Click Windows --> cmd
+		     cd Desktop
+		     mkdir __CATH
+		     cd __CATH
+		     git clone https://github.com/cartlopez/CCNA2
+
+Open VS Code (Virtual Studio Code):
+	--> File --> Open Folder __CATH on Desktop
+	On the Explorer:
+		Under CCNA2 --> Select "autowifi.json"
+					host_ip = 10.31.10.3
+					hostname = 21-cathAP
+					SSID = GUEST31-WIFIcath
+					channel = 4
+			    --> Select "autowifiV2.py"
+				    Change  -open("autowifi.json")
+				    Then "Run Python File"
+
+TASK6: Interactive Voice Response System(IVRS)
+"Welcome to NGCP, the power provider of the country."
+"Press 1, 
+
+
+TASK7: Creating DNS using Powershell Script
+Open Powershell --> Refer to "PS2024_DAY1cath.txt"
+			--> Create DNS records
+			--> Create WEB site
+
+

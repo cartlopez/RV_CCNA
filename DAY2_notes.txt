@@ -1,0 +1,114 @@
+CISCO DAY 2 CONFIGURATION | May 21, 2024
+
+TASK5: How to get Senior-level Skills in IP address?
+"Know how to 5-hit combo an enemy."
+
+1hit: Find the network
+2hit: Find all valid range
+3hit: Find the broadcast
+4hit: Find the Hosts
+5hit: Find the Subnets
+
+
+TemPlate command_CoreSW:
+config t
+vlan 25
+ name ARMY.MIL.PH
+ exit
+Int vlan 25
+ no shut
+ ip add 10.0.8.1 255.255.248.0
+ip dhcp excluded-add 10.0.8.1 10.0.8.100
+ip dhcp pool ARMY.MIL.PH
+ network 10.0.8.0 255.255.255.0
+ default-router 10.0.8.1
+ domain-name ARMY.MIL.PH
+ dns-server 10.31.1.10
+ option 150 ip 10.31.100.8
+ Int Fa 0/7
+  swi acc vlan 25
+  do sh ip dhcp binding
+  shut
+  no shut
+end
+
+
+TASK8: Virtualization for Network Engineers
+	!!Everything is LINUX: AWS, Azure, GCP, Iphone, etc.
+
+
+Step1: COnfigure Linux Centos Virtual Machine
+	Power on "Clone of RSTallrun" on the VM
+	login: root | C1sc0123
+
+Step2: How to give IP address to Linux VM:
+	root# cat /etc/edev/rules.d/70-persistent-net.rules 
+	(if may laman, delete it)
+	root# rm -r -f /etc/edev/rules.d/70-persistent-net.rules
+	(click 'yes' to continue)
+	root# reboot
+	(you should be able to view an IP address for your VM after restart)
+
+Step3: Go to SecureCRT app
+	Quick Connect1 --> Protocol: SSH2
+			   Hostname: (IP address found on your VM)
+		       --> Login to root account
+
+	Quick Connect2 --> Protocol: Telnet
+			   Hostname: (IP address found on your VM)
+			   Port: 2001 (Refer to the Route Switch Tshoot Lab diagram on maual provided)
+		--> Open up to port 2016
+
+Step4: Types of Routing Protocol
+	1. Static = S = ginagamit on servers
+	2. Default = S* = ginagamit sa PCs
+	3. EIGRP = D
+	4. OSPF = O
+	5. BGP = B
+	6. VPN
+
+	Go now to "Day3_May21_CATH_codes.txt" notes at github CCNA2 repository
+	Then configure A1, A2, P1, P2 (line 31 to 50)
+
+	Create DEFAULT routing on A1
+	A1# bp    ;to show the ip address and interfaces
+	A1: Creating dedault Route and Secondary Default Route
+	A1# config t
+	A1(config)# ip route 0.0.0.0 0.0.0.0 192.168.1.129 1    ;closest Server to A1
+	A1(config)# ip route 0.0.0.0 0.0.0.0 192.168.1.130 2    ;backup/secondary
+	A1(config)# do sh ip route static
+
+	Create DEFAULT routing on A2
+	A2: Creating dedault Route and Secondary Default Route
+	A2# config t
+	A2(config)# ip route 0.0.0.0 0.0.0.0 192.168.1.130 1    ;closest Server to A2
+	A2(config)# ip route 0.0.0.0 0.0.0.0 192.168.1.129 2
+	A2(config)# do sh ip route static
+
+	Create STATIC routing on P1
+	P1: Creating STATIC Routes for VLAN 200 and Vlan 20
+	P1# config t
+	P1(config)# ip route 192.168.1.128 255.255.255.224 10.2.1.1 1
+	P1(config)# do traceroute 192.168.1.129           ; to view path
+	P1(config)# ip route 192.168.1.130 255.255.255.255 10.2.1.2    ;longest prefix rule
+	P1(config)# do sh ip route static
+
+	Create STATIC routing on P2
+	P2: Creating STATIC Routes for VLAN 200 and a longest prefix rule for 192.168.1.129 GW of 10.2.1.1
+	P2# config t
+	P2(config)# ip route 192.168.1.128 255.255.255.224 10.2.1.2
+	P2(config)# ip route 192.168.1.129 255.255.255.255 10.2.1.1
+	P2(config)# do sh ip route static
+
+	Create DEFAULT routing on CISCO/PC/EndDevices
+	P1# conf t
+	P1(config)# ip route 0.0.0.0  0.0.0.0 10.2.1.1
+	P1(config)# do sh ip route static
+
+	P2# conf t
+	P2(config)# ip route 0.0.0.0  0.0.0.0 10.2.1.2
+	P2(config)# do sh ip route static	
+
+
+	R4# show ip route connected
+		

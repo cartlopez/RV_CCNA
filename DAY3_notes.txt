@@ -1,0 +1,58 @@
+CISCO DAY 2 CONFIGURATION | May 22, 2024
+
+TASK3: MANAGED SERVICE PROVIDERS (MSP)
+
+TASK6: BASIC BGP to UPGRADE YOUR CAREER
+
+	EIGRP - Enhanced Interior Gateway Routing Protocol
+	OSPF - Open Shortest Path First Protocol
+	eBGP - Exterior Border Gateway Protocol
+	iBGP - Interior Border Gateway Protocol
+	BGP - BiG Paysahod
+
+@configure BGP for R1:
+router bgp 1
+bgp log-neighbor-changes
+bgp router-id 1.1.1.1
+neighbor 208.8.8.4 remote-as 45
+neighbor 207.7.7.2 remote-as 2
+neighbor 209.9.9.3 remote-as 3
+network 208.8.8.0 mask 255.255.255.0
+network 207.7.7.0 mask 255.255.255.0
+network 209.9.9.0 mask 255.255.255.0
+network 10.1.1.0 mask 255.255.255.0
+
+TASK7: DESIGN AND CONFIGURE SITE TO SITE VPN
+What is VPN connection?
+1. Encryption - provide Confidentiality
+2. Hashing - provide data Integrity
+3. Tunnelling - ensuring data Availability
+
+
+
+-------BONUS activity!!
+IP ADDRESS scanning: 
+	C:\Users\Administrator> ping feutech.edu.ph
+	C:\Users\Administrator> nmap -sP 202.57.37.0/24    ;to list all IP address na pwede mo atakihin
+
+HACK YOUR NEIGHBOR:
+	Layer 3 attack/IP address:
+	C:\Users\Administrator> ping 10.k.1.10
+	C:\Users\Administrator> nmap -sP 10.k.1.0/24
+	C:\Users\Administrator> nmap -sP 10.k.100.1/24
+
+	Layer 4 attack/Port Scanning:
+	C:\Users\Administrator> nmap -v 10.k.1.10
+ 	(is 139, 445 open??)
+
+	Layer 5 attack/ Netbios Hijacking Attack:
+	cmd
+	C:\Users\Administrator> net use \\10.k.1.10\ipc$
+	(gamitin ang H: para connect sa C: nya) or if may error proceed to:
+	C:\Users\Administrator> net use h: /delete
+	C:\Users\Administrator> net use h: \\10.k.1.10\ipc$
+
+	Layer 7: How to know if your PC is HACKED/BOTNET/VIRUSED/MALWARE already.
+	C:\Users\Administrator> netstat -s -p tcp
+
+T

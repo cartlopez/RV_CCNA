@@ -1,0 +1,271 @@
+CISCO DAY 4 CONFIGURATION | May 23, 2024
+
+TASK0: VPN
+@vpnPINAS
+	enable
+	config t
+	no logging console
+	no ip domain-lookup
+	int gi 1
+	  no shut
+	  ip add 192.168.108.8 255.255.255.0
+	int gi 2
+	  no shut
+	  ip add 192.168.102.8 255.255.255.0
+	int gi 3
+	  no shut
+	  ip add 192.168.104.8 255.255.255.0
+	do wr
+@vpnHENTAI
+	enable
+	config t
+	no logging console
+	no ip domain-lookup
+	int gi 1
+	  no shut
+	  ip add 192.168.108.9 255.255.255.0
+	int gi 2
+	  no shut
+	  ip add 192.168.102.9 255.255.255.0
+	int gi 3
+	  no shut
+	  ip add 192.168.104.9 255.255.255.0
+	do wr
+
+
+TASK1: cont. of VPN
+!!VM@vpn
+	enable
+	show ip int br
+	show crypto ipsec sa detail
+!!@GUI
+KEY: 12345678
+			vpn PINAS		vpnJAPAN
+Tunnel IP		200.0.0.8		200.0.0.9
+Subnet Mask		255.255.255.0		255.255.255.0		
+Remote IP Peer		192.168.108.9		192.168.108.8
+Remote Subnet		192.168.104.0 		192.168.103.0
+
+!!VM@bldg
+@BLDGPINAS
+	sudo su
+	ifconfig eth0 192.168.103.18 netmask 255.255.255.0 up
+	route add default gw 192.168.103.8
+	traceroute 192.168.103.19
+@BLDGJAPAN
+	sudo su
+	ifconfig eth0 192.168.103.19 netmask 255.255.255.0 up
+	route add default gw 192.168.103.9
+	traceroute 192.168.103.18
+
+!!@cmd
+	route add 10.0.0.0 mask 255.0.0.0 10.M.1.4
+	route add 200.0.0.0 mask 255.255.255.0 10.M.1.4	
+
+
+TASK2: Network Services for Network Engineers
+Service No.1: DNS - Domain Name System
+	Step1:  Buy a domain so that you became the owner.
+		Create your DNS primary Zone --> ngcpM.com
+	Step2: Buy and Configure an email system.
+	Step3: Allow your DNS to talk to other DNS
+
+Service No.3: FTP or File Transfer Server
+	Create c:\PutItHere
+	--> Windows --> Server Manager --> Tools --> Internet Information Services (IIS) Manager
+	--> right-click on Sites --> Add FTP site
+
+	@SecureCRT (SW, CM, EDGE)
+ 	     	 # copy run ftp:
+      remote host? ftp.ngcp31.com
+   dest. filename? May23_code.txt
+
+	!!!If may error, perform muna these codes:
+		# conf t
+		# ip domain-lookup
+		# ip name-server 10.M.1.10
+	
+Service No.4: Corporate WEBsite Service
+	Create c:\PutItHere
+	--> Windows --> Server Manager --> Tools --> Internet Information Services (IIS) Manager
+	--> right-click on Sites --> Add WEBsite
+
+
+TASK3: 	VAPT - Vulnerability Assessment and Pentest
+	Scope:
+	     1. Network Scanning of All IP address and Server Resources
+		    cmd -> nmap -sP 10.K.1.0/24
+		    cmd -> nmap -sP 10.K.1.0/24
+
+	     2. Port Scan 10.K.1.10 for services to attack
+		    cmd -> nmap -v 10.K.1.10
+
+TASK4:  How to Start a Blueteaming Career.
+UTM = Unified Threat Management: Firewall+VPN+antiVirus+IPS/IDS+NAC:endpoint
+	Top 5 in the World:
+	1. PALO ALTO
+	2. Checkpoint
+	3. CISCO Firepower
+	4. Fortinet
+	5. everyone else
+
+
+TASK5:  Protecting your Network Assets
+   Step1: Create a web firewall so that only
+
+ !!command@vpnPinas on SecureCRT
+	#hostname UTMPinas
+	#line vty 0 14
+	#exec-timeout 0 0
+	#int Gi 3
+	#ip address 192.168.103.9 255.255.255.0 secondary
+	#service finger
+	#service tcp-small-servers
+	#service utp-small-servers
+	#ip dns server
+	#ip https server
+	#ip http secure-server
+
+ Configure Your first Packet Filter Firewall.
+ FORMULA: "  Protocol       hacker   victim     Port "
+           tcp,udp,icmp,IP   "any"   cm/cm2   
+
+-----
+EX1: http:80 and ping is open on web8.com while
+     https:443 and telnet:23 is open on web9.com
+!!command@UTMPinas on SecureCRT
+config t
+NO IP access-list Extended fwpolicy1
+IP access-list Extended fwpolicy1
+ permit Tcp Any host 192.168.103.8 Eq 80 log
+ permit icmp Any host 192.168.103.8 log
+!
+ permit Tcp Any host 192.168.103.9 Eq 443 log
+ permit Tcp Any host 192.168.103.9 Eq 23 log
+ deny ip any any Log
+ do sh ip access-list fwpolicy1
+ Int Gi3
+  ip access-group fwpolicy1 IN
+  end
+show ip access-lists fwpolicy1
+----
+EX2: ping, http:80, dns:53,  ftp:21, is open on web8 while
+     http:80, ssh:22, telnet:23, https:443, ping is open on web9.com
+!!command@UTMPinas on SecureCRT
+config t
+NO IP access-list Extended SUPEReasy4
+IP access-list Extended SUPEReasy4
+ permit icmp Any host 192.168.103.8
+ permit Tcp Any host 192.168.103.8 Eq 80
+ permit Tcp Any host 192.168.103.8 Eq 53
+ permit Tcp Any host 192.168.103.8 Eq 21
+!
+ permit Tcp Any host 192.168.103.9 Eq 80
+ permit Tcp Any host 192.168.103.9 Eq 22
+ permit Tcp Any host 192.168.103.9 Eq 443
+ permit icmp Any host 192.168.103.9
+ deny ip any any Log
+ do sh ip access-list SUPEReasy4
+ Int Gi3
+  ip access-group SUPEReasy4 IN
+  end
+show ip access-lists SUPEReasy4
+---
+EX3: http:80, dns:53, ftp:21, is open on web8 while
+     telnet:23, ssh:22, https:443, dns:53, is open on web9.com
+!!command@UTMPinas on SecureCRT
+config t
+NO IP access-list Extended THELASTP
+IP access-list Extended THELASTP
+ permit Tcp Any host 192.168.103.8 Eq 80
+ permit Tcp Any host 192.168.103.8 Eq 53
+ permit Tcp Any host 192.168.103.8 Eq 21
+!
+ permit Tcp Any host 192.168.103.9 Eq 23
+ permit Tcp Any host 192.168.103.9 Eq 22
+ permit Tcp Any host 192.168.103.9 Eq 443
+ permit Tcp Any host 192.168.103.9 Eq 53
+ deny ip any any Log
+ do sh ip access-list THELASTP
+ Int Gi3
+  ip access-group THELASTP IN
+  end
+show ip access-lists THELASTP
+---
+@cmd for checking:
+  > nmap -Pn -v www.web8.com
+  > nmap -Pn -v www.web9.com
+
+
+TASK6: PROTECT: Use firewall policy to block sites in your organization
+   Step1: Give internet to UTMPinas and point DNS to 1.1.1.1
+	#conf t
+	#ip route 0.0.0.0 0.0.0.0 192.168.108.2
+	#do ping 8.8.8.8 (inter)
+	#ip domain-lookup
+	#ip name-server 1.1.1.1
+   Step2: BLOCK IT! Use standard access-list:
+	#conf t
+	#NO ip access-list standard NOPORN1
+	#ip access-list standard NOPORN1
+	#deny 66.254.0.0 0.0.255.255
+	#deny 104.21.0.0 0.0.255.255
+	#deny 68.235.0.0 0.0.255.255
+	#deny 104.17.0.0 0.0.255.255
+	#permit any
+	#Int Gi1         ;nasa Gi1 ang internet!!!!
+	#ip access-group NOPORN1 in
+   Step3: ALLOW IT!
+	#Int Gi1
+	#NO ip access-group NOPORN1 in
+
+
+TASK7: Exam Laboratory: NETWORK ADDRESS TRANSLATION/NAT
+   The PrivateIPs: 10.0.0.0/8 (big companies), 172.16.0.0/24, 192.168.x.0/24 (small companies)
+   The PublicIPs: Internet Routable IP addresses
+
+   Step1: Give internet to BLDGpinas and (old)BLDGjapan using NAT
+	!!command@UTMPinas on SecureCRT
+	!Define NAT inside and outside
+	#config t
+	#int gi 1
+	#ip nat outside
+	#int gi 2
+	#ip nat inside
+	#int gi 3
+	#ip nat inside
+	!Create standard access-list to allow all buildings
+	#access-list 3 permit 192.168.102.0 0.0.0.255
+	#access-list 3 permit 192.168.103.0 0.0.0.255
+	!Create a static NAT pool and NAT overload
+	#ip nat inside source static 192.168.103.18 192.168.108.69
+	#ip nat inside source static 192.168.102.18 192.168.108.77
+	#ip nat inside source list 3 interface gi 1 overload
+	#end
+	#sh ip nat translations
+
+
+TASK8: Configuring Network Time Protocol or NTP:
+	!!command@UTMPinas on SecureCRT
+	#nmap -sU time.google.com
+	#conf t
+	#ntp server time.google.com
+	#end
+	#show ntp association
+	#show clock
+	#ping time.google.com
+
+
+TASK9: How tp configure ipv6 on CISCO devices
+!!command@UTMPinas on SecureCRT
+config t
+ipv6 unicast-routing
+int Gi 2
+ ipv6 enable
+ ipv6 address CAFE:FACE:BABA:FAFA::AAAA/64
+int Gi 3
+ ipv6 enable
+ ipv6 address 1111:2222:3333:4444::cccc/64
+do sh ipv6 int brief
+
+

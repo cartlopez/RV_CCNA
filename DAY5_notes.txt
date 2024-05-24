@@ -1,0 +1,54 @@
+CISCO DAY 5 CONFIGURATION | May 24, 2024
+
+Important command for troubleshooting CISCO devices
+	#show cdp neighbor
+	#sh spanning-tree vlan 1
+
+
+TASK3: EXPENSIVE SWITCH/MANAGEABLE SWITCH:\ = 20k
+1. mac address learning": sh mac address-table
+2  mac address filtering
+3  mac address forwaring
+4  Php: loop avoidance
+5. $$: Vlan Feature $$ = 60k up
+
+TASK4: Mastering the Switch BUttons:
+Mode Button: jailBreak/Password Forget
+Poweroff, Press Mode, until
+Switch:  flash_init
+	 delete flash:config.text
+         delete flash:vlan.dat
+         boot
+
+TASK5: HOW TO SPOT A VERY HEALTHY SWITCH?
+super healthy: "all flashing green."
+amber/orange: needs help.
+
+Task9.2: STP Port Roles: 
+DesignatedPort/DP = fwd port of Root Bridge
+RootPort/RP = fwd port of non-root Bridge(1 only)
+AlternatePort/AP = blk port of nonRootPorts
+BackupPort = yuck yuck
+
+TASK16: FHRP:First Hop Redundancy Protocol:
+        " The Rich Kid Problem!" = richKidSolution.
+HSRP: hot standby routing protocol: all Cisco SW:
+    2 or more switches combine to form One virtualIP
+VRRP: virtual router redundancy protocol: any brand
+GLBP: global load balancing protocol: all Cisco Router
+Companies: 2 or 3 telcos:
+
+@SW
+config t
+hostname GLOBE
+Int vlan 1
+standby 1 ip 10.31.1.6
+standby 1 preempt
+standby 1 Priority 100
+do sh standby
+
+   ;"standby" for HSRP
+   ;"vrrp" for VRRP
+   ;"glbp" gor GLBP
+
+
